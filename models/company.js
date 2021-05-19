@@ -142,6 +142,41 @@ class Company {
 
     if (!company) throw new NotFoundError(`No company: ${handle}`);
   }
+
+  /** Filter companies by filter `data`.
+   *
+   * Data can include: {name, minEmployees, maxEmployees}
+   *
+   * Returns [{handle, name, description, numEmployees, logoUrl}...]
+   *
+   * Throws NotFoundError if not found.
+   */
+
+    static async filter(data) {
+    const { whereCols, values } = sqlForFiltering(
+        data,
+        {
+          minEmployees: "num_employees",
+          maxEmployees: "num_employees",
+        });
+    
+    let includeEmployees = '';
+    if (whereCols.includes(minEmployees) || whereCols.includes(minEmployees)){
+      includeEmployees = ', num_employees AS "numEmployees'
+    }   
+
+    const querySql = `
+      SELECT handle, name, description ${includeEmployees}", logo_url AS "logoUrl"
+          FROM companies
+          WHERE ${whereCols}
+          ORDER BY name AND num_employees`;
+    const result = await db.query(querySql, [...values]);
+    const companies = result.rows;
+
+    if (!companies) throw new NotFoundError(`No companies with current filters: ${data}`);
+
+    return companies;
+  }
 }
 
 
