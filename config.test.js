@@ -11,7 +11,7 @@ describe("config can come from env", function () {
     expect(config.SECRET_KEY).toEqual("abc");
     expect(config.PORT).toEqual(5000);
     expect(config.getDatabaseUri()).toEqual("other");
-    expect(config.BCRYPT_WORK_FACTOR).toEqual(12);
+    expect(config.BCRYPT_WORK_FACTOR).toEqual(10);
 
     delete process.env.SECRET_KEY;
     delete process.env.PORT;
