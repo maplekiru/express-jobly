@@ -42,8 +42,41 @@ function ensureLoggedIn(req, res, next) {
   }
 }
 
+/** Middleware to use when Admin must be logged in.
+ *
+ * If not, raises Unauthorized.
+ */
+
+function ensureAdminLoggedIn(req, res, next) {
+  try {
+    if (!res.locals.user) throw new UnauthorizedError();
+    if (res.locals.user.is_admin === false) throw new UnauthorizedError();
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+
+
+/** Middleware to use when user or Admin must be logged in.
+ *
+ * If not, raises Unauthorized.
+ */
+
+ function ensureAdminOrUserLoggedIn(req, res, next) {
+  try {
+    if (!res.locals.user) throw new UnauthorizedError();
+    if (res.locals.user.is_admin === false && res.locals.user.username !== req.params.username) throw new UnauthorizedError();
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+
 
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
+  ensureAdminLoggedIn,
+  ensureAdminOrUserLoggedIn
 };

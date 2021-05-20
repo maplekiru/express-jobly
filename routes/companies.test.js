@@ -114,7 +114,7 @@ describe("GET /companies", function () {
   });
 
   test("ok for filter data with minEmployees", async function () {
-    const resp = await request(app).get("/companies?minEmployees=2");
+    const resp = await request(app).get("/companies?minEmployees=3");
     expect(resp.body).toEqual({
       companies:
         [
@@ -164,24 +164,6 @@ describe("GET /companies", function () {
       }
     });
   });
-<<<<<<< HEAD
-});
-  /************************************** GET /companies/:handle */
-
-  describe("GET /companies/:handle", function () {
-    test("works for anon", async function () {
-      const resp = await request(app).get(`/companies/c1`);
-      expect(resp.body).toEqual({
-        company: {
-          handle: "c1",
-          name: "C1",
-          description: "Desc1",
-          numEmployees: 1,
-          logoUrl: "http://c1.img",
-        },
-      });
-    });
-=======
 
   test("fails: test next() handler", async function () {
     // there's no normal failure event which will cause this route to fail ---
@@ -194,7 +176,6 @@ describe("GET /companies", function () {
     expect(resp.statusCode).toEqual(500);
   });
 });
->>>>>>> ba28e8708469e150b0e75c2b3498d3744e851767
 
 /************************************** GET /companies/:handle */
 
