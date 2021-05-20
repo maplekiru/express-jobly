@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForFiltering } = require("../helpers/sql");
+const { sqlForPartialUpdate } = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -153,7 +153,7 @@ class Company {
    */
 
   static async filter(data) {
-    const { whereCols, values } = sqlForFiltering(
+    const { whereCols, values } = Company._sqlForFiltering(
       data,
       {
         minEmployees: "num_employees",
@@ -161,8 +161,8 @@ class Company {
       });
 
     let includeEmployees = '';
-    if (whereCols.includes('minEmployees') || whereCols.includes('maxEmployees')) {
-      includeEmployees = ', num_employees AS "numEmployees'
+    if (whereCols.includes('num_employees')) {
+      includeEmployees = ', num_employees AS "numEmployees"'
     }
 
     const querySql = `
@@ -170,13 +170,61 @@ class Company {
           FROM companies
           WHERE ${whereCols}
           ORDER BY name`;
-    console.log('querySql', querySql)
-    const result = await db.query(querySql, [...values]);
+
+    let result;      
+    try {
+      result = await db.query(querySql, [...values]);
+    } catch (err) {
+      throw new BadRequestError(err);
+    }
     const companies = result.rows;
 
-    if (!companies) throw new NotFoundError(`No companies with current filters: ${data}`);
+    if (companies.length === 0) throw new NotFoundError(`No companies with current filters`);
 
     return companies;
+  }
+
+
+  /** Given two objects: first one's keys in camel case format and values to filter by in db.
+and second one keys in keys in camel case format and corresponding values is column name in SQL db.
+accepts {JS keyname: filter value, ....}, { JS keyname: "SQL column name",......}.
+  
+Returns {whereCols, values}
+
+whereCols ----> '"name"=$1', AND '"num_employees">$2',....
+values ----> [%Mitchell%, 32, .....]
+
+Throws bad request error if dataToFilter is empty or minEmployees is greater than maxEmployees.
+**/
+   static _sqlForFiltering(dataToFilter, jsToSql) {
+    const keys = Object.keys(dataToFilter);
+    if (keys.length === 0) throw new BadRequestError("No data");
+    if (dataToFilter.minEmployees > dataToFilter.maxEmployees) {
+      throw new BadRequestError("Min employees can't be greater than max employees");
+    }
+    
+    // {name: 'Mitchell', num_employees } => ['"name"=$1', '"age"=$2']
+    const cols = [];
+    const values= [];
+    for (let i = 0; i < keys.length; i++) {
+      let colName = keys[i];
+      if (colName === 'name') {
+        cols.push(`name ILIKE $${i + 1}`)
+        values.push(`%${dataToFilter[colName]}%`)
+      }
+      if (colName === 'minEmployees') {
+        cols.push(`"${jsToSql[colName] || colName}">=$${i + 1}`);
+        values.push(`${dataToFilter[colName]}`)
+      }
+      if (colName === 'maxEmployees') {
+        cols.push(`"${jsToSql[colName] || colName}"<=$${i + 1}`);
+        values.push(`${dataToFilter[colName]}`)
+      }
+    }
+    return {
+      whereCols: cols.join(' AND '),
+      values:values
+    };
   }
 }
 

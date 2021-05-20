@@ -10,13 +10,14 @@
       },
       "minEmployees": {
         "type": "integer",
-        "minmum": 0
+        "minimum": 0
       },
       "maxEmployees": {
         "type": "integer",
-        "minmum": 0
+        "minimum": 0
       }
     },
-    "additionalProperties": false
+    "additionalProperties": false,
+    "required": []
   }
   
