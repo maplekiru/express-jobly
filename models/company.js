@@ -152,6 +152,7 @@ class Company {
    * Throws NotFoundError if no companies found.
    */
 
+  // TODO: REFACTOR with one method in findAll
   static async filter(data) {
     const { whereCols, values } = Company._sqlForFiltering(
       data,
@@ -171,7 +172,7 @@ class Company {
           WHERE ${whereCols}
           ORDER BY name`;
 
-    let result;      
+    let result;
     try {
       result = await db.query(querySql, [...values]);
     } catch (err) {
@@ -179,11 +180,10 @@ class Company {
     }
     const companies = result.rows;
 
-    if (companies.length === 0) throw new NotFoundError(`No companies with current filters`);
-
     return companies;
   }
 
+  // mention what jsToSQL (type / what to expect)
 
   /** Given two objects: first one's keys in camel case format and values to filter by in db.
 and second one keys in keys in camel case format and corresponding values is column name in SQL db.
@@ -196,34 +196,34 @@ values ----> [%Mitchell%, 32, .....]
 
 Throws bad request error if dataToFilter is empty or minEmployees is greater than maxEmployees.
 **/
-   static _sqlForFiltering(dataToFilter, jsToSql) {
+  static _sqlForFiltering(dataToFilter, jsToSql) {
+    // dont throw error and just return empty
     const keys = Object.keys(dataToFilter);
     if (keys.length === 0) throw new BadRequestError("No data");
     if (dataToFilter.minEmployees > dataToFilter.maxEmployees) {
       throw new BadRequestError("Min employees can't be greater than max employees");
     }
-    
+
     // {name: 'Mitchell', num_employees } => ['"name"=$1', '"age"=$2']
     const cols = [];
-    const values= [];
-    for (let i = 0; i < keys.length; i++) {
-      let colName = keys[i];
-      if (colName === 'name') {
-        cols.push(`name ILIKE $${i + 1}`)
-        values.push(`%${dataToFilter[colName]}%`)
-      }
-      if (colName === 'minEmployees') {
-        cols.push(`"${jsToSql[colName] || colName}">=$${i + 1}`);
-        values.push(`${dataToFilter[colName]}`)
-      }
-      if (colName === 'maxEmployees') {
-        cols.push(`"${jsToSql[colName] || colName}"<=$${i + 1}`);
-        values.push(`${dataToFilter[colName]}`)
-      }
+    const values = [];
+
+    // just use if statements 
+    if (dataToFilter['name']) {
+      values.push(`%${dataToFilter['name']}%`)
+      cols.push(`name ILIKE $${values.length}`) // use values.length!
+    }
+    if (dataToFilter['minEmployees']) {
+      values.push(dataToFilter['minEmployees']) //values.push (hard code values)
+      cols.push(`"${jsToSql['minEmployees'] || 'minEmployees'}">=$${values.length}`);
+    }
+    if (dataToFilter['maxEmployees']) {
+      values.push(dataToFilter['maxEmployees']) //values.push (hard code values)
+      cols.push(`"${jsToSql['maxEmployees'] || 'maxEmployees'}"<=$${values.length}`);
     }
     return {
       whereCols: cols.join(' AND '),
-      values:values
+      values: values
     };
   }
 }

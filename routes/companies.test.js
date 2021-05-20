@@ -147,9 +147,8 @@ describe("GET /companies", function () {
 
   test("not ok with filter with 0 results", async function () {
     const resp = await request(app).get("/companies?name=C4");
-    expect(resp.statusCode).toEqual(404);
     expect(resp.body).toEqual({
-        error: { message: 'No companies with current filters', status: 404 }
+        companies: []
     });
   });
 

@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>61/61</span>
+                <span class='fraction'>56/56</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.31% </span>
+                <span class="strong">91.67% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>24/26</span>
+                <span class='fraction'>22/24</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>55/55</span>
+                <span class='fraction'>52/52</span>
             </div>
         
             
@@ -443,6 +443,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -471,7 +472,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -496,20 +497,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -673,6 +673,7 @@ class Company {
    * Throws NotFoundError if no companies found.
    */
 &nbsp;
+  // TODO: REFACTOR with one method in findAll
   static async filter(data) {
     const { whereCols, values } = Company._sqlForFiltering(
       data,
@@ -692,7 +693,7 @@ class Company {
           WHERE ${whereCols}
           ORDER BY name`;
 &nbsp;
-    let result;      
+    let result;
     try {
       result = await db.query(querySql, [...values]);
     } catch (err) {
@@ -700,11 +701,10 @@ class Company {
     }
     const companies = result.rows;
 &nbsp;
-    if (companies.length === 0) throw new NotFoundError(`No companies with current filters`);
-&nbsp;
     return companies;
   }
 &nbsp;
+  // mention what jsToSQL (type / what to expect)
 &nbsp;
   /** Given two objects: first one's keys in camel case format and values to filter by in db.
 and second one keys in keys in camel case format and corresponding values is column name in SQL db.
@@ -717,34 +717,34 @@ values ----&gt; [%Mitchell%, 32, .....]
 &nbsp;
 Throws bad request error if dataToFilter is empty or minEmployees is greater than maxEmployees.
 **/
-   static _sqlForFiltering(dataToFilter, jsToSql) {
+  static _sqlForFiltering(dataToFilter, jsToSql) {
+    // dont throw error and just return empty
     const keys = Object.keys(dataToFilter);
     if (keys.length === 0) throw new BadRequestError("No data");
     if (dataToFilter.minEmployees &gt; dataToFilter.maxEmployees) {
       throw new BadRequestError("Min employees can't be greater than max employees");
     }
-    
+&nbsp;
     // {name: 'Mitchell', num_employees } =&gt; ['"name"=$1', '"age"=$2']
     const cols = [];
-    const values= [];
-    for (let i = 0; i &lt; keys.length; i++) {
-      let colName = keys[i];
-      if (colName === 'name') {
-        cols.push(`name ILIKE $${i + 1}`)
-        values.push(`%${dataToFilter[colName]}%`)
-      }
-      if (colName === 'minEmployees') {
-        cols.push(`"${jsToSql[colName] || <span class="branch-1 cbranch-no" title="branch not covered" >colName}</span>"&gt;=$${i + 1}`);
-        values.push(`${dataToFilter[colName]}`)
-      }
-      if (colName === 'maxEmployees') {
-        cols.push(`"${jsToSql[colName] || <span class="branch-1 cbranch-no" title="branch not covered" >colName}</span>"&lt;=$${i + 1}`);
-        values.push(`${dataToFilter[colName]}`)
-      }
+    const values = [];
+&nbsp;
+    // just use if statements 
+    if (dataToFilter['name']) {
+      values.push(`%${dataToFilter['name']}%`)
+      cols.push(`name ILIKE $${values.length}`) // use values.length!
+    }
+    if (dataToFilter['minEmployees']) {
+      values.push(dataToFilter['minEmployees']) //values.push (hard code values)
+      cols.push(`"${jsToSql['minEmployees'] || <span class="branch-1 cbranch-no" title="branch not covered" >'minEmployees'}</span>"&gt;=$${values.length}`);
+    }
+    if (dataToFilter['maxEmployees']) {
+      values.push(dataToFilter['maxEmployees']) //values.push (hard code values)
+      cols.push(`"${jsToSql['maxEmployees'] || <span class="branch-1 cbranch-no" title="branch not covered" >'maxEmployees'}</span>"&lt;=$${values.length}`);
     }
     return {
       whereCols: cols.join(' AND '),
-      values:values
+      values: values
     };
   }
 }
@@ -757,7 +757,7 @@ module.exports = Company;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu May 20 2021 11:41:06 GMT-0700 (Pacific Daylight Time)
+                at Thu May 20 2021 12:13:57 GMT-0700 (Pacific Daylight Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>
