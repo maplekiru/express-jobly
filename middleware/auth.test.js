@@ -111,7 +111,7 @@ describe("ensureAdminLoggedIn", function () {
     ensureAdminLoggedIn(req, res, next);
   });
 
-  test("unauth if login but not Admin", function () {
+  test("unauth if login but no isAdmin", function () {
     expect.assertions(1);
     const req = {};
     const res = { locals: { user: { username: "test"} } };
@@ -121,7 +121,7 @@ describe("ensureAdminLoggedIn", function () {
     ensureAdminLoggedIn(req, res, next);
   });
   
-  test("unauth if login but not Admin", function () {
+  test("unauth if login isAdmin is invalid value", function () {
     expect.assertions(1);
     const req = {};
     const res = { locals: { user: { username: "test", isAdmin: "nope" } } };
@@ -173,5 +173,25 @@ describe("ensureAdminOrUserLoggedIn", function () {
       expect(err instanceof UnauthorizedError).toBeTruthy();
     };
     ensureAdminOrUserLoggedIn(req, res, next);
+  });
+
+  test("unauth if login but no admin information", function () {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { username: "test"} } };
+    const next = function (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureAdminLoggedIn(req, res, next);
+  });
+  
+  test("unauth if login Admin information is invalid value", function () {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { username: "test", isAdmin: "nope" } } };
+    const next = function (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureAdminLoggedIn(req, res, next);
   });
 });

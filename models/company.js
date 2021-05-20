@@ -152,7 +152,6 @@ class Company {
    * Throws NotFoundError if no companies found.
    */
 
-  // TODO: REFACTOR with one method in findAll
   static async filter(data) {
     const { whereCols, values } = Company._sqlForFiltering(
       data,

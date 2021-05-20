@@ -62,11 +62,11 @@ function ensureAdminLoggedIn(req, res, next) {
  *
  * If not, raises Unauthorized.
  */
-//TODO write same tests about is admin===false/true
+
 function ensureAdminOrUserLoggedIn(req, res, next) {
   try {
     if (!res.locals.user) throw new UnauthorizedError();
-    if (res.locals.user.isAdmin === false && res.locals.user.username !== req.params.username) throw new UnauthorizedError();
+    if (res.locals.user.isAdmin !== true && res.locals.user.username !== req.params.username) throw new UnauthorizedError();
     return next();
   } catch (err) {
     return next(err);
