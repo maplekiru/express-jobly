@@ -147,9 +147,9 @@ class Company {
    *
    * Data can include: {name, minEmployees, maxEmployees}
    *
-   * Returns [{handle, name, description, numEmployees, logoUrl}...]
+   * Returns [{handle, name, description, numEmployees(optional), logoUrl}...]
    *
-   * Throws NotFoundError if not found.
+   * Throws NotFoundError if no companies found.
    */
 
   static async filter(data) {
@@ -179,6 +179,5 @@ class Company {
     return companies;
   }
 }
-
 
 module.exports = Company;

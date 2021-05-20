@@ -206,3 +206,66 @@ describe("remove", function () {
     }
   });
 });
+
+/************************************** filter */
+
+describe("filter", function () {
+  const filterData = {
+    name: "C1"
+  };
+
+  test("works", async function () {
+    let companies = await Company.filter(filterData);
+    expect(companies).toEqual([{
+      handle: "c1",
+      name: "C1",
+      description: "Desc1",
+      logoUrl: "http://c1.img",
+    }]);
+  });
+
+  // test("works: null fields", async function () {
+  //   const updateDataSetNulls = {
+  //     name: "New",
+  //     description: "New Description",
+  //     numEmployees: null,
+  //     logoUrl: null,
+  //   };
+
+  //   let company = await Company.update("c1", updateDataSetNulls);
+  //   expect(company).toEqual({
+  //     handle: "c1",
+  //     ...updateDataSetNulls,
+  //   });
+
+  //   const result = await db.query(
+  //         `SELECT handle, name, description, num_employees, logo_url
+  //          FROM companies
+  //          WHERE handle = 'c1'`);
+  //   expect(result.rows).toEqual([{
+  //     handle: "c1",
+  //     name: "New",
+  //     description: "New Description",
+  //     num_employees: null,
+  //     logo_url: null,
+  //   }]);
+  // });
+
+  // test("not found if no such company", async function () {
+  //   try {
+  //     await Company.update("nope", updateData);
+  //     fail();
+  //   } catch (err) {
+  //     expect(err instanceof NotFoundError).toBeTruthy();
+  //   }
+  // });
+
+  // test("bad request with no data", async function () {
+  //   try {
+  //     await Company.update("c1", {});
+  //     fail();
+  //   } catch (err) {
+  //     expect(err instanceof BadRequestError).toBeTruthy();
+  //   }
+  // });
+});

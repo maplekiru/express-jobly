@@ -37,7 +37,7 @@ accepts {JS keyname: filter value, ....}, { JS keyname: "SQL column name",......
 Returns {whereCols, values}
 
 whereCols ----> '"name"=$1', AND '"num_employees">$2',....
-values ----> [Mitchell, 32, .....]
+values ----> [%Mitchell%, 32, .....]
 
 Throws bad request error if dataToFilter is empty or minEmployees is greater than maxEmployees.
 **/
@@ -45,19 +45,16 @@ Throws bad request error if dataToFilter is empty or minEmployees is greater tha
 function sqlForFiltering(dataToFilter, jsToSql) {
   const keys = Object.keys(dataToFilter);
   if (keys.length === 0) throw new BadRequestError("No data");
-  if (+dataToFilter.minEmployees > +dataToFilter.maxEmployees) {
+  if (dataToFilter.minEmployees > dataToFilter.maxEmployees) {
     throw new BadRequestError("Min employees can't be greater than max employees");
   }
+  
   // {name: 'Mitchell', num_employees } => ['"name"=$1', '"age"=$2']
-  // const cols = keys.map((colName, idx) =>
-  //     `"${jsToSql[colName] || colName}"=$${idx + 1}`,
-  // );
   const cols = [];
   const values= []
   for (let i = 0; i < keys.length; i++) {
     let colName = keys[i];
     if (colName === 'name') {
-      // cols.push(`"${jsToSql[colName] || colName}" ILIKE "%$${i+ 1}%"`);
       cols.push(`name ILIKE $${i + 1}`)
       values.push(`%${dataToFilter[colName]}%`)
     }

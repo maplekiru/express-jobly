@@ -56,7 +56,6 @@ router.get("/", async function (req, res, next) {
   if (data.minEmployees) data.minEmployees = +data.minEmployees;
   if (data.maxEmployees) data.maxEmployees = +data.maxEmployees;
 
-  console.log('data', data)
   const validator = jsonschema.validate(data, companyFilterSchema);
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
