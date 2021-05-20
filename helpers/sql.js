@@ -1,12 +1,10 @@
 const { BadRequestError } = require("../expressError");
 
-// THIS NEEDS SOME GREAT DOCUMENTATION.
-
 /** Given two objects: first one's keys in camel case format and values to be updated to db.
 and second one keys in keys in camel case format and corresponding values in SQL formating.
 accepts {JS keyname: updated value, ....}, { JS keyname: "SQL column name",......}.
  
-Returns {setCols, values}
+Returns {setCols, values} //show example of what input looks like to get this output
  
 setCols ----> ' "first_name"=$1','"age"=$2',....
 values ----> [Aliya, 32, .....]

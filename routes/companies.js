@@ -57,6 +57,7 @@ router.get("/", async function (req, res, next) {
   if (data.maxEmployees) data.maxEmployees = +data.maxEmployees;
 
   const validator = jsonschema.validate(data, companyFilterSchema);
+  console.log("VALIDATOR:",validator.valid)
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
     throw new BadRequestError(errs);

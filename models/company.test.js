@@ -300,7 +300,7 @@ describe("Test for _sqlForFiltering", function () {
 
     expect(result).toEqual({
       whereCols: '"num_employees">=$1',
-      values: ['2']
+      values: [2]
     });
   });
 
@@ -311,7 +311,7 @@ describe("Test for _sqlForFiltering", function () {
 
     expect(result).toEqual({
       whereCols: '"num_employees"<=$1',
-      values: ['2']
+      values: [2]
     });
   });
 
@@ -322,7 +322,7 @@ describe("Test for _sqlForFiltering", function () {
 
     expect(result).toEqual({
       whereCols: 'name ILIKE $1 AND "num_employees">=$2 AND "num_employees"<=$3',
-      values: ['%C1%', '1', '3']
+      values: ['%C1%', 1, 3]
     });
   });
 
