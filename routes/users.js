@@ -94,6 +94,7 @@ router.patch("/:username", ensureAdminOrUserLoggedIn, async function (req, res, 
  **/
 
 router.delete("/:username", ensureAdminOrUserLoggedIn, async function (req, res, next) {
+  console.log('delete ran')
   await User.remove(req.params.username);
   return res.json({ deleted: req.params.username });
 });

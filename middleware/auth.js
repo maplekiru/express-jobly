@@ -50,7 +50,7 @@ function ensureLoggedIn(req, res, next) {
 function ensureAdminLoggedIn(req, res, next) {
   try {
     if (!res.locals.user) throw new UnauthorizedError();
-    if (res.locals.user.is_admin === false) throw new UnauthorizedError();
+    if (res.locals.user.isAdmin === false) throw new UnauthorizedError();
     return next();
   } catch (err) {
     return next(err);
@@ -58,7 +58,7 @@ function ensureAdminLoggedIn(req, res, next) {
 }
 
 
-/** Middleware to use when user or Admin must be logged in.
+/** Middleware to use when user @/username or Admin must be logged in.
  *
  * If not, raises Unauthorized.
  */
@@ -66,7 +66,9 @@ function ensureAdminLoggedIn(req, res, next) {
  function ensureAdminOrUserLoggedIn(req, res, next) {
   try {
     if (!res.locals.user) throw new UnauthorizedError();
-    if (res.locals.user.is_admin === false && res.locals.user.username !== req.params.username) throw new UnauthorizedError();
+    if (res.locals.user.isAdmin === false && res.locals.user.username !== req.params.username) throw new UnauthorizedError();
+    console.log('res.locals.is_admin', res.locals.user.isAdmin)
+    console.log('req.params', req.params.username)
     return next();
   } catch (err) {
     return next(err);
