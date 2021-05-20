@@ -114,7 +114,7 @@ describe("GET /companies", function () {
   });
 
   test("ok for filter data with minEmployees", async function () {
-    const resp = await request(app).get("/companies?minEmployees=3");
+    const resp = await request(app).get("/companies?minEmployees=2");
     expect(resp.body).toEqual({
       companies:
         [
@@ -157,7 +157,7 @@ describe("GET /companies", function () {
       expect(resp.statusCode).toEqual(500);
     });
   });
-
+});
   /************************************** GET /companies/:handle */
 
   describe("GET /companies/:handle", function () {
@@ -276,4 +276,4 @@ describe("GET /companies", function () {
         .set("authorization", `Bearer ${u1Token}`);
       expect(resp.statusCode).toEqual(404);
     });
-  });
+});
