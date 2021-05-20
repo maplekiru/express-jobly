@@ -24,7 +24,7 @@ const router = express.Router();
  * This returns the newly created user and an authentication token for them:
  *  {user: { username, firstName, lastName, email, isAdmin }, token }
  *
- * Authorization required: login/Admin
+ * Authorization required: Admin
  **/
 
 router.post("/", ensureAdminLoggedIn, async function (req, res, next) {
@@ -44,7 +44,7 @@ router.post("/", ensureAdminLoggedIn, async function (req, res, next) {
  *
  * Returns list of all users.
  *
- * Authorization required: login/Admin
+ * Authorization required: Admin
  **/
 
 router.get("/", ensureAdminLoggedIn, async function (req, res, next) {
@@ -57,10 +57,10 @@ router.get("/", ensureAdminLoggedIn, async function (req, res, next) {
  *
  * Returns { username, firstName, lastName, isAdmin }
  *
- * Authorization required: login by user or Admin.
+ * Authorization required: login by same user or Admin.
  **/
 
-router.get("/:username", ensureAdminOrUserLoggedIn,  async function (req, res, next) {
+router.get("/:username", ensureAdminOrUserLoggedIn, async function (req, res, next) {
   const user = await User.get(req.params.username);
   return res.json({ user });
 });
@@ -73,7 +73,7 @@ router.get("/:username", ensureAdminOrUserLoggedIn,  async function (req, res, n
  *
  * Returns { username, firstName, lastName, email, isAdmin }
  *
- * Authorization required: login by user or Admin.
+ * Authorization required: login by same user or Admin.
  **/
 
 router.patch("/:username", ensureAdminOrUserLoggedIn, async function (req, res, next) {
@@ -82,7 +82,7 @@ router.patch("/:username", ensureAdminOrUserLoggedIn, async function (req, res, 
     const errs = validator.errors.map(e => e.stack);
     throw new BadRequestError(errs);
   }
-  
+
   const user = await User.update(req.params.username, req.body);
   return res.json({ user });
 });
@@ -90,11 +90,10 @@ router.patch("/:username", ensureAdminOrUserLoggedIn, async function (req, res, 
 
 /** DELETE /[username]  =>  { deleted: username }
  *
- * Authorization required: login by user or Admin.
+ * Authorization required: login by same user or Admin.
  **/
 
 router.delete("/:username", ensureAdminOrUserLoggedIn, async function (req, res, next) {
-  console.log('delete ran')
   await User.remove(req.params.username);
   return res.json({ deleted: req.params.username });
 });

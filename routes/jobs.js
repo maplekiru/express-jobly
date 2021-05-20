@@ -25,7 +25,7 @@ const router = new express.Router();
  * Authorization required: Admin
  */
 
-router.post("/", ensureAdminLoggedIn, async function (req, res, next) {
+router.post("/", ensureAdminLoggedIn , async function (req, res, next) {
   const validator = jsonschema.validate(req.body, companyNewSchema);
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
@@ -57,12 +57,12 @@ router.get("/", async function (req, res, next) {
   if (data.maxEmployees) data.maxEmployees = +data.maxEmployees;
 
   const validator = jsonschema.validate(data, companyFilterSchema);
-  console.log("VALIDATOR:", validator.valid)
+  console.log("VALIDATOR:",validator.valid)
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
     throw new BadRequestError(errs);
   }
-
+ 
   const companies = await Company.filter(data);
   return res.json({ companies })
 });

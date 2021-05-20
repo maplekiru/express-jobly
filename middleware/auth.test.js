@@ -110,6 +110,26 @@ describe("ensureAdminLoggedIn", function () {
     };
     ensureAdminLoggedIn(req, res, next);
   });
+
+  test("unauth if login but not Admin", function () {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { username: "test"} } };
+    const next = function (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureAdminLoggedIn(req, res, next);
+  });
+  
+  test("unauth if login but not Admin", function () {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { username: "test", isAdmin: "nope" } } };
+    const next = function (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureAdminLoggedIn(req, res, next);
+  });
 });
 
 
@@ -117,7 +137,7 @@ describe("ensureAdminLoggedIn", function () {
 describe("ensureAdminOrUserLoggedIn", function () {
   test("works with admin", function () {
     expect.assertions(1);
-    const req = {params:{username:'test2'}};
+    const req = { params: { username: 'test2' } };
     const res = { locals: { user: { username: "test", isAdmin: true } } };
     const next = function (err) {
       expect(err).toBeFalsy();
@@ -127,7 +147,7 @@ describe("ensureAdminOrUserLoggedIn", function () {
 
   test("works with same user", function () {
     expect.assertions(1);
-    const req = {params:{username: "test2"} };
+    const req = { params: { username: "test2" } };
     const res = { locals: { user: { username: "test2", isAdmin: false } } };
     const next = function (err) {
       expect(err).toBeFalsy();
@@ -147,7 +167,7 @@ describe("ensureAdminOrUserLoggedIn", function () {
 
   test("unauth if login but not same user or Admin", function () {
     expect.assertions(1);
-    const req = {params:{username:'test2'}};
+    const req = { params: { username: 'test2' } };
     const res = { locals: { user: { username: "test", isAdmin: false } } };
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();

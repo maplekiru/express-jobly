@@ -22,7 +22,7 @@ afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
 /************************************** POST /companies */
-// TODO add a test non admin can not post
+
 describe("POST /companies", function () {
   const newCompany = {
     handle: "new",
@@ -149,7 +149,7 @@ describe("GET /companies", function () {
   test("not ok with filter with 0 results", async function () {
     const resp = await request(app).get("/companies?name=C4");
     expect(resp.body).toEqual({
-      companies: []
+        companies: []
     });
   });
 
@@ -277,7 +277,7 @@ describe("PATCH /companies/:handle", function () {
 /************************************** DELETE /companies/:handle */
 
 describe("DELETE /companies/:handle", function () {
-  test("works for admin", async function () {
+  test("works for users", async function () {
     const resp = await request(app)
       .delete(`/companies/c1`)
       .set("authorization", `Bearer ${u2Token}`);
@@ -298,22 +298,22 @@ describe("DELETE /companies/:handle", function () {
   });
 
 
-  test("Doesnot work for non AdminUser", async function () {
+  test("works for AdminUser", async function () {
     const resp = await request(app)
-      .delete(`/companies/c1`)
-      .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(401);
-    expect(resp.body).toEqual({
-      error: {
-        message: "Unauthorized",
-        status: 401
-      }
-    });
+        .delete(`/companies/c1`)
+        .set("authorization", `Bearer ${u1Token}`);
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+          error: {
+            message: "Unauthorized",
+            status: 401
+          }
+        });
   });
 });
 
 
 
 
-
-
+  
+  
