@@ -214,7 +214,7 @@ describe("filter", function () {
     name: "C1"
   };
 
-  test("works", async function () {
+  test("works with good data", async function () {
     let companies = await Company.filter(filterData);
     expect(companies).toEqual([{
       handle: "c1",
@@ -222,6 +222,14 @@ describe("filter", function () {
       description: "Desc1",
       logoUrl: "http://c1.img",
     }]);
+
+    test("works with bad data", async function () {
+      try {
+        const companies = await Company.filter({nope:"nope"});
+        fail();
+      } catch (err) {
+        expect(err instanceof BadRequestError).toBeTruthy();
+      }
   });
 
   // test("works: null fields", async function () {
