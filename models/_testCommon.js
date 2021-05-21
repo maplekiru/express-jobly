@@ -23,7 +23,7 @@ async function commonBeforeAll() {
     VALUES ('j1', 1, '0', 'c1'),
            ('j2', 2, '.10', 'c1'),
            ('j3', 3, '1', 'c2')`);
-  
+
 
   await db.query(`
         INSERT INTO users(username,
@@ -34,10 +34,10 @@ async function commonBeforeAll() {
         VALUES ('u1', $1, 'U1F', 'U1L', 'u1@email.com'),
                ('u2', $2, 'U2F', 'U2L', 'u2@email.com')
         RETURNING username`,
-      [
-        await bcrypt.hashSync("password1", BCRYPT_WORK_FACTOR),
-        await bcrypt.hashSync("password2", BCRYPT_WORK_FACTOR),
-      ]);
+    [
+      await bcrypt.hashSync("password1", BCRYPT_WORK_FACTOR),
+      await bcrypt.hashSync("password2", BCRYPT_WORK_FACTOR),
+    ]);
 }
 
 async function commonBeforeEach() {

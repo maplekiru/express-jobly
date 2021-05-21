@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://our.company.com/jobNew.schema.json",
+    "$id": "http://our.company.com/jobUpdate.schema.json",
     "type": "object",
     "properties": {
       "title": {
@@ -14,17 +14,9 @@
       },
       "equity": {
         "type": "number"
-      },
-      "companyHandle":{
-        "type": "string"
       }
     },
     "additionalProperties": false,
-    "required": [
-      "title",
-      "salary",
-      "equity",
-      "companyHandle"
-    ]
+    "required": []
   }
   

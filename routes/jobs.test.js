@@ -28,7 +28,7 @@ describe("POST /jobs", function () {
   const newJob = {
     title: "new job",
     salary: 10,
-    equity: "0.15",
+    equity: 0.15,
     companyHandle: 'c1'
   };
 
@@ -37,11 +37,15 @@ describe("POST /jobs", function () {
       .post("/jobs")
       .send(newJob)
       .set("authorization", `Bearer ${adminToken}`);
+    console.log('resbody', resp.body)
     expect(resp.statusCode).toEqual(201);
     expect(resp.body).toEqual({
       job: {
         id: expect.any(Number),
-        ...newJob
+        title: "new job",
+        salary: 10,
+        equity: "0.15",
+        companyHandle: 'c1'
       }
     });
   });
@@ -106,14 +110,14 @@ describe("GET /jobs", function () {
             id: expect.any(Number),
             title: "j2",
             salary: 2,
-            equity: "0.10",
+            equity: "0.1",
             companyHandle: 'c1'
           },
           {
             id: expect.any(Number),
             title: "j3",
             salary: 3,
-            equity: "3",
+            equity: "1",
             companyHandle: 'c2'
           }
         ],
@@ -228,7 +232,7 @@ describe("PATCH /jobs/:id", function () {
     const resp = await request(app)
       .patch(`/jobs/${id}`)
       .send({
-        companyHandle: c4,
+        companyHandle: "c4",
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -284,7 +288,7 @@ describe("DELETE /jobs/:id", function () {
     const resp = await request(app)
       .delete(`/jobs/${id}`)
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.body).toEqual({ deleted: id });
+    expect(resp.body).toEqual({ deleted: `${id}` });
   });
 
   test("unauth for anon", async function () {
@@ -299,7 +303,7 @@ describe("DELETE /jobs/:id", function () {
     const resp = await request(app)
       .delete(`/jobs/nope`)
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.statusCode).toEqual(401);
+    expect(resp.statusCode).toEqual(400);
   });
 
   test("not found for job that does not exist", async function () {
