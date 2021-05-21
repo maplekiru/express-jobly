@@ -186,10 +186,12 @@ class Company {
 
   /** Given two objects: first one's keys in camel case format and values to filter by in db.
 and second one keys in keys in camel case format and corresponding values is column name in SQL db.
-accepts {JS keyname: filter value, ....}, { JS keyname: "SQL column name",......}.
-  
-Returns {whereCols, values}
+ 
+Input(dataToFilter, jsToSql)
+dataToFilter---->>{name: 'Aliya', minEmployees: 32}
+jsToSql---->>{minEmployees:num_employees}
 
+Returns {whereCols, values}
 whereCols ----> '"name"=$1', AND '"num_employees">$2',....
 values ----> [%Mitchell%, 32, .....]
 
@@ -207,17 +209,16 @@ Throws bad request error if dataToFilter is empty or minEmployees is greater tha
     const cols = [];
     const values = [];
 
-    // just use if statements 
     if (dataToFilter['name']) {
       values.push(`%${dataToFilter['name']}%`)
-      cols.push(`name ILIKE $${values.length}`) // use values.length!
+      cols.push(`name ILIKE $${values.length}`) 
     }
     if (dataToFilter['minEmployees']) {
-      values.push(dataToFilter['minEmployees']) //values.push (hard code values)
+      values.push(dataToFilter['minEmployees']) 
       cols.push(`"${jsToSql['minEmployees'] || 'minEmployees'}">=$${values.length}`);
     }
     if (dataToFilter['maxEmployees']) {
-      values.push(dataToFilter['maxEmployees']) //values.push (hard code values)
+      values.push(dataToFilter['maxEmployees']) 
       cols.push(`"${jsToSql['maxEmployees'] || 'maxEmployees'}"<=$${values.length}`);
     }
     return {

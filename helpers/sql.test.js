@@ -6,8 +6,6 @@ describe("test sqlForPartialUpdate", function () {
     const dataToUpdate = { firstName: 'test1', lastName: "test2" }
     const jsToSql = { firstName: "first_name", lastName: "last_name" }
     const result = sqlForPartialUpdate(dataToUpdate, jsToSql);
-
-
     expect(result).toEqual({
       setCols: '"first_name"=$1, "last_name"=$2',
       values: ["test1", "test2"]
@@ -29,8 +27,6 @@ describe("test sqlForPartialUpdate", function () {
     const dataToUpdate = { firstName: 'test1', lastName: "test2" }
     const jsToSql = { lastName: "last_name" }
     const result = sqlForPartialUpdate(dataToUpdate, jsToSql);
-
-
     expect(result).toEqual({
       setCols: '"firstName"=$1, "last_name"=$2',
       values: ["test1", "test2"]

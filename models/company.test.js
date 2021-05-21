@@ -233,51 +233,6 @@ describe("filter", function () {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
   });
-
-  // test("works: null fields", async function () {
-  //   const updateDataSetNulls = {
-  //     name: "New",
-  //     description: "New Description",
-  //     numEmployees: null,
-  //     logoUrl: null,
-  //   };
-
-  //   let company = await Company.update("c1", updateDataSetNulls);
-  //   expect(company).toEqual({
-  //     handle: "c1",
-  //     ...updateDataSetNulls,
-  //   });
-
-  //   const result = await db.query(
-  //         `SELECT handle, name, description, num_employees, logo_url
-  //          FROM companies
-  //          WHERE handle = 'c1'`);
-  //   expect(result.rows).toEqual([{
-  //     handle: "c1",
-  //     name: "New",
-  //     description: "New Description",
-  //     num_employees: null,
-  //     logo_url: null,
-  //   }]);
-  // });
-
-  // test("not found if no such company", async function () {
-  //   try {
-  //     await Company.update("nope", updateData);
-  //     fail();
-  //   } catch (err) {
-  //     expect(err instanceof NotFoundError).toBeTruthy();
-  //   }
-  // });
-
-  // test("bad request with no data", async function () {
-  //   try {
-  //     await Company.update("c1", {});
-  //     fail();
-  //   } catch (err) {
-  //     expect(err instanceof BadRequestError).toBeTruthy();
-  //   }
-  // });
 });
 
 
@@ -347,15 +302,4 @@ describe("Test for _sqlForFiltering", function () {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
   });
-
-  // test("missing jsSql keyValue pair", function () {
-  //     const dataToUpdate = { firstName: 'test1', lastName: "test2" }
-  //     const jsToSql = {lastName: "last_name" }
-  //     const result = sqlForPartialUpdate(dataToUpdate, jsToSql);
-
-
-  //     expect(result).toEqual({
-  //         setCols: '"firstName"=$1, "last_name"=$2',
-  //         values: ["test1", "test2"]
-  //     });
 });
