@@ -22,7 +22,6 @@ afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
 /************************************** POST /companies */
-// TODO add a test non admin can not post
 describe("POST /companies", function () {
   const newCompany = {
     handle: "new",
